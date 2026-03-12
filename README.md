@@ -1,203 +1,187 @@
+# Proyecto Final: Docker — Voting App
 
-# 🚀 90 Días de DevOps con Roxs
-
-![](https://media.licdn.com/dms/image/v2/D4D16AQF4ND-cC_uxZg/profile-displaybackgroundimage-shrink_350_1400/profile-displaybackgroundimage-shrink_350_1400/0/1731367727725?e=1753920000&v=beta&t=80SZ4IOx4V_VDcCBli7aFjYuMhzMos9SRFq8GnV8zc4)
-
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com)
-[![Node.js](https://img.shields.io/badge/Node.js-Worker-green?logo=node.js)](https://nodejs.org)
-[![Node.js](https://img.shields.io/badge/Node.js-Result-green?logo=node.js)](https://nodejs.org)
-[![Flask](https://img.shields.io/badge/Flask-Vote-lightgrey?logo=flask)](https://flask.palletsprojects.com/)
-[![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)](https://redis.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)](https://postgresql.org)
-[![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-orange?logo=prometheus)](https://prometheus.io)
-[![Grafana](https://img.shields.io/badge/Grafana-Visualization-orange?logo=grafana)](https://grafana.com)
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/roxsross/roxs-devops-project90)
-
-> **Proyecto educativo de DevOps** creado por **roxsross** para aprender conceptos fundamentales de desarrollo, contenedores, orquestación y monitoreo.
-> ℹ️ Este repositorio parte del [Docker Example Voting App](https://github.com/dockersamples/example-voting-app) y ha sido mejorado y adaptado por **roxsross** para el desafío 90 Días de DevOps.
-
-
-## 🔥 ¿Por qué sumarte?
-
-Porque **aprender DevOps no tiene por qué ser aburrido ni costoso**.  
-En este desafío vas a construir, romper y mejorar una app real... **¡con tus propias manos!**  
-Con cada semana vas a aprender algo nuevo, y lo más importante: **vas a aplicarlo al instante**.  
-
-📢 *"Si no lo deployás, no lo aprendiste."* — Roxs
-
-## 📸 Screenshots del Ecosistema ROXS
-
-<div align="center">
-
-| 📦 Aplicación Principal | 📋 Resultados | 📊 🏠 Grafana Home | 🐳 Docker Containers |
-|:---:|:---:|:---:|:---:|
-| <img src="./docs/2.png" width="200"/> | <img src="./docs/1.png" width="200"/> | <img src="./docs/3.png" width="200"/> | <img src="./docs/4.png" width="200"/> |
-| *Sistema de Votación* | *Web Resultados* | *Dash Grafana* | *Contenedores onfire* |
-
-</div>
+Aplicación de votación distribuida. El objetivo es **crear los Dockerfiles** para cada servicio y un **compose.yml** que orqueste toda la aplicación.
 
 ---
 
-## 🧩 Arquitectura de la Aplicación
+## Objetivo del proyecto
 
-Este repositorio incluye el código base de una aplicación distribuida, compuesta por tres servicios:
+Al finalizar debes tener:
 
+1. **Dockerfile** para el servicio **Vote** (Python/Flask).
+2. **Dockerfile** para el servicio **Worker** (Node.js).
+3. **Dockerfile** para el servicio **Result** (Node.js).
+4. **compose.yml** en la raíz del repositorio que levante:
+   - Los tres servicios anteriores.
+   - Redis.
+   - PostgreSQL.
+
+Con `docker compose up --build` la aplicación debe quedar funcionando y accesible.
+
+---
+
+## Arquitectura de la aplicación
 ![](./docs/5.png)
 
-- **Vote** : Servicio en Flask que permite votar (🐱 o 🐶) y publica los votos en Redis.
-- **Worker** : Servicio Node.js que consume votos desde Redis y los guarda en PostgreSQL.
-- **Result** : App Node.js que muestra los resultados en tiempo real usando WebSockets.
-
-### 📦 Versiones recomendadas de los servicios
-
-| Servicio | Lenguaje/Framework | Versión recomendada |
-|----------|--------------------|---------------------|
-| Vote     | Flask (Python)     | Python 3.13+, Flask 3.3+ |
-| Worker   | Node.js            | Node.js 20.x+            |
-| Result   | Node.js            | Node.js 20.x+            |
-| Redis    | Redis                | Redis 6.x+                 |
-| PostgreSQL| PostgreSQL          | PostgreSQL 15.x+           |
-
-> ⚠️ Usar versiones iguales o superiores a las recomendadas asegura compatibilidad y soporte con las dependencias del proyecto.
----
-
-## 🛠️ ¿Qué vas a construir?
-
-A lo largo del programa, vos vas a encargarte de:
-
-✅ Crear tus propios archivos `docker-compose.yml`  
-✅ Automatizar la configuración con Ansible  
-✅ Desplegar todo en local usando Terraform Provider Local  
-✅ Crear pipelines CI/CD con GitHub Actions  
-✅ Orquestar la app en Kubernetes  
-✅ Monitorear con Prometheus y Grafana  
-✅ (Opcional) Llevarlo a AWS
+| Servicio    | Descripción |
+|------------|-------------|
+| **Vote**   | Web en Flask para votar (opción A o B). Envía votos a Redis. |
+| **Worker** | Proceso Node.js que lee votos de Redis y los persiste en PostgreSQL. |
+| **Result** | Web Node.js que lee votos de PostgreSQL y los muestra en tiempo real (WebSockets). |
+| **Redis**  | Cola de mensajes entre Vote y Worker. |
+| **PostgreSQL** | Base de datos donde se guardan los votos. |
 
 ---
 
-## 📂 Estructura del Repositorio
+## Estructura del repositorio
 
-```bash
+Coloca los Dockerfiles y el compose como se indica (los servicios están dentro de la carpeta `voting-app/`):
+
+```text
 .
-├── vote/             # Flask app (app.py)
-├── worker/           # Worker Node.js (main.js)
-├── result/           # Resultados en tiempo real (main.js)
-├── views/            # HTML y frontend
-├── load-testing/     # Pruebas de Carga y rendimiento con k6
-├── README.md         # Este archivo ;)
-````
-
-> ⚠️ No se incluyen archivos de Docker, Terraform o CI/CD. Vos los vas a construir paso a paso como parte del desafío.
-
----
-
-## 🗓️ Programa Semana a Semana
-
-| Semana | Tema Clave                                 | Proyecto a construir                         |
-| ------ | ------------------------------------------ | -------------------------------------------- |
-| 1      | Linux + Vagrant + Ansible                  | Levantar app sin Docker usando Vagrant       |
-| 2      | Docker y Docker Compose                    | Crear los Dockerfiles y `docker-compose.yml` |
-| 3      | GitHub Actions CI/CD                       | Automatizar builds con self-hosted runner    |
-| 4      | Terraform (Provider Local)                 | Crear infraestructura local con Terraform    |
-| 5      | Kubernetes local con Minikube              | Desplegar app dockerizada en clúster local   |
-| 6      | Despliegue con CI/CD a Kubernetes          | Automatizar despliegues en k8s               |
-| 7      | Seguridad en Contenedores                  | Integrar herramientas de vulnerabilidades    |
-| 8      | Troubleshooting + Performance              | Debug y tuning de recursos                   |
-| 9      | Despliegue en la Nube (EC2/EKS - Opcional) | Llevar tu app a AWS                          |
-
----
-
-## 🤘 ¿Cómo empiezo?
-
-Cloná el repo y seguí el material semanal en el sitio del programa.
-
-```bash
-git clone https://github.com/roxsross/roxs-devops-project90.git
-cd roxs-devops-project90
+├── voting-app/
+│   ├── vote/                    # Servicio Vote (Flask)
+│   │   ├── app.py
+│   │   ├── requirements.txt
+│   │   ├── templates/
+│   │   └── Dockerfile           ← CREAR
+│   ├── worker/                  # Servicio Worker (Node.js)
+│   │   ├── main.js
+│   │   ├── package.json
+│   │   └── Dockerfile           ← CREAR
+│   ├── result/                  # Servicio Result (Node.js)
+│   │   ├── main.js
+│   │   ├── package.json
+│   │   ├── views/               # HTML, CSS, JS del front
+│   │   └── Dockerfile           ← CREAR
+│   └── ...
+├── compose.yml           ← CREAR (en la raíz del repo)
+└── README.md
 ```
 
-El código está listo para que lo personalices, dockerices y automatices.
+No se incluyen Dockerfile ni compose; debes crearlos tú. En `compose.yml` usa como build context las rutas `voting-app/vote`, `voting-app/worker` y `voting-app/result`, o coloca el `compose.yml` dentro de `voting-app/` y usa `./vote`, `./worker`, `./result`.
 
 ---
 
-## 📈 Bonus: Métricas y Observabilidad
+## Servicios y variables de entorno
 
-Todos los servicios están instrumentados con Prometheus. Podrás visualizar las métricas que vos mismo vas a recolectar y graficar con Grafana a partir de la semana 6.
+Usa estas referencias al escribir los Dockerfiles y el `compose.yml`.
 
----
-## 💪 Motivación: ¿Por qué hacer este desafío?
+### Vote (Flask)
 
-Aprender DevOps puede parecer abrumador. Hay muchas herramientas, conceptos nuevos, y cientos de tutoriales que te dicen por dónde empezar… pero ninguno te lleva de la mano a construir algo real **desde cero**.
+| Variable        | Descripción        | Valor por defecto |
+|----------------|--------------------|-------------------|
+| `REDIS_HOST`   | Host de Redis      | `redis`           |
+| `OPTION_A`     | Texto opción A     | `Cats`            |
+| `OPTION_B`     | Texto opción B     | `Dogs`            |
+| `DATABASE_HOST`| Host PostgreSQL    | `database`        |
+| `DATABASE_USER`| Usuario PostgreSQL | `postgres`        |
+| `DATABASE_PASSWORD` | Contraseña   | `postgres`        |
+| `DATABASE_NAME`| Nombre de la BD    | `votes`           |
 
-Este programa no es teoría vacía. Vas a **construir una app real**, como lo harías en un equipo profesional.
-Acá vas a **equivocarte, arreglar, automatizar, monitorear y desplegar**.
-Y cuando termines, vas a poder decir con orgullo: **yo hice esto** 💥
+- Puerto interno: **80** (o el que use la app en `app.py`).
+- Comando típico: servir con **gunicorn** (ya está en `requirements.txt`). Ejemplo de `CMD` en el Dockerfile:
 
-> 🧠 *"DevOps no se aprende en un curso, se aprende en la práctica. Y este es tu campo de juego."*
+  ```dockerfile
+  CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
+  ```
 
+### Worker (Node.js)
 
----
+| Variable        | Descripción        | Valor por defecto |
+|----------------|--------------------|-------------------|
+| `REDIS_HOST`   | Host de Redis      | `redis`           |
+| `DATABASE_HOST`| Host PostgreSQL    | `database`        |
+| `DATABASE_USER`| Usuario PostgreSQL | `postgres`        |
+| `DATABASE_PASSWORD` | Contraseña   | `postgres`        |
+| `DATABASE_NAME`| Nombre de la BD    | `votes`           |
 
+- Punto de entrada: `node main.js` (o `npm start`).
+- Versión Node recomendada: **20.x** (ver `worker/.nvmrc` si existe).
 
-## 🧰 Recursos complementarios (para cada herramienta)
+### Result (Node.js)
 
-| Herramienta    | Documentación Oficial                                                                                  | Recurso Recomendado                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Docker         | [https://docs.docker.com/](https://docs.docker.com/)                                                   | [Docker Workshop](https://docs.docker.com/get-started/workshop/)                                                        |
-| Ansible        | [https://docs.ansible.com/](https://docs.ansible.com/)                                                 | [Ansible para principiantes](https://developers.redhat.com/products/ansible/getting-started)                         |
-| Terraform      | [https://developer.hashicorp.com/terraform/](https://developer.hashicorp.com/terraform/)               | [Guía de Terraform en español](https://learn.hashicorp.com/terraform)                                       |
-| Kubernetes     | [https://kubernetes.io/docs/home/](https://kubernetes.io/docs/home/)                                   | [Kubernetes The Hard Way (by Kelsey Hightower)](https://github.com/kelseyhightower/kubernetes-the-hard-way) |
-| GitHub Actions | [https://docs.github.com/actions](https://docs.github.com/actions)                                     | [Curso Gratuito GitHub Actions](https://docs.github.com/en/actions/quickstart)                              |
-| Prometheus     | [https://prometheus.io/docs/introduction/overview/](https://prometheus.io/docs/introduction/overview/) | [Observabilidad ](https://opentelemetry.io/es/docs/concepts/observability-primer/)                                   |
-| Grafana        | [https://grafana.com/docs/](https://grafana.com/docs/)                                                 | [Dashboards y Alertas con Grafana](https://grafana.com/tutorials/)                                          |
-| PostgreSQL     | [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)                                   | [PostgreSQL Tutorial](https://www.postgresqltutorial.com/)                                                  |
-| Redis          | [https://redis.io/docs/](https://redis.io/docs/)                                                       | [Aprendé Redis](https://redis.io/learn/howtos/quick-start)                                                           |
+| Variable        | Descripción        | Valor por defecto |
+|----------------|--------------------|-------------------|
+| `DATABASE_HOST`| Host PostgreSQL    | `database`        |
+| `DATABASE_USER`| Usuario PostgreSQL | `postgres`        |
+| `DATABASE_PASSWORD` | Contraseña   | `postgres`        |
+| `DATABASE_NAME`| Nombre de la BD    | `votes`           |
+| `APP_PORT`     | Puerto HTTP        | `3000`            |
 
-> 🛠️ Tip: Agregá estos links como favoritos, los vas a necesitar cuando te enfrentes a errores reales 😉
+- Punto de entrada: `node main.js` (o `npm start`).
+- Versión Node recomendada: **20.x** (ver `result/.nvmrc` si existe).
+- Servir la carpeta **views** como estáticos (la app ya usa rutas relativas a `views/`).
 
----
+### Redis
 
-## 🗺️ DevOps Roadmap para Principiantes
+- Imagen oficial: `redis:6` o superior.
+- Puerto: **6379**.
 
-```
-✔️ 1. Entender Linux y la terminal
-✔️ 2. Automatizar entornos con Vagrant y Ansible
-✔️ 3. Construir imágenes con Docker
-✔️ 4. Orquestar servicios con Docker Compose
-✔️ 5. Crear pipelines con GitHub Actions
-✔️ 6. Definir infraestructura con Terraform
-✔️ 7. Desplegar en Kubernetes (local)
-✔️ 8. Agregar métricas con Prometheus y Grafana
-✔️ 9. Aprender troubleshooting y performance
-✔️ 🔥 BONUS: Subir tu proyecto a la nube (AWS)
-```
+### PostgreSQL
 
-Roadmap que recomiendo seguir [DevOps](https://roadmap.sh/devops)
-
-### 🎯 Objetivo final:
-
-Tener un **portfolio técnico** completo y práctico, demostrando tus conocimientos en cada área del ciclo de vida DevOps.
-
----
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo MIT License - ver el archivo [LICENSE](LICENSE) para detalles.
-
-## 👨‍💻 Autor
-
-**roxsross** - Instructor DevOps y Cloud
-
-- 🐦 Twitter: [@roxsross](https://twitter.com/roxsross)
-- 🔗 LinkedIn: [roxsross](https://linkedin.com/in/roxsross)
-- ☕ Ko-fi [roxsross](https://ko-fi.com/roxsross)
-- ▶️ Youtube [295devops](https://www.youtube.com/@295devops)
-- 📧 Email: roxs@295devops.com
+- Imagen oficial: `postgres:15` o superior.
+- Variables: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` (por ejemplo `postgres`, `postgres`, `votes`).
+- Puerto: **5432**.
+- El **Worker** crea la tabla `votes` si no existe; puedes usar un volumen para persistir datos.
 
 ---
 
-> 💡 Si querés sumar este desafío a tu portfolio o como parte de tu onboarding, ¡hacelo con orgullo! 💥
+## Orden de arranque y redes
 
+- **PostgreSQL** y **Redis** deben estar disponibles antes de que arranquen Vote, Worker y Result.
+- En `compose.yml` usa `depends_on` para ordenar los servicios.
+- Todos los servicios deben estar en la **misma red** para resolverse por nombre (`redis`, `database`, etc.).
 
+---
 
+## Cómo probar tu solución
+
+1. En la raíz del repo:
+
+   ```bash
+   docker compose up --build
+   ```
+
+2. Cuando todos los contenedores estén en ejecución:
+   - **Votar:** abrir en el navegador el puerto mapeado al servicio **Vote** (ej. `http://localhost:5000` si mapeaste 5000:80).
+   - **Ver resultados:** abrir el puerto mapeado al servicio **Result** (ej. `http://localhost:5001` si mapeaste 5001:3000).
+
+3. Debe ser posible votar, ver la página de resultados actualizarse y que los votos persistan al reiniciar los contenedores (si configuraste volumen para PostgreSQL).
+
+![](./docs/2.png)
+![](./docs/1.png)
+
+---
+
+## Resumen de entregables
+
+| Entregable           | Ubicación                  | Descripción |
+|----------------------|----------------------------|-------------|
+| Dockerfile Vote      | `voting-app/vote/Dockerfile`  | Imagen Flask con dependencias y comando gunicorn. |
+| Dockerfile Worker    | `voting-app/worker/Dockerfile`| Imagen Node.js con `npm install` y `node main.js`. |
+| Dockerfile Result    | `voting-app/result/Dockerfile`| Imagen Node.js con `npm install`, `node main.js` y archivos `views/`. |
+| compose.yml   | Raíz del repo              | Definición de los 5 servicios, variables de entorno, puertos y `depends_on`. |
+
+---
+
+## Versiones recomendadas
+
+| Componente   | Versión        |
+|-------------|-----------------|
+| Python (Vote) | 3.11+         |
+| Node (Worker / Result) | 20.x LTS |
+| Redis       | 6.x             |
+| PostgreSQL  | 15.x            |
+
+---
+
+## Referencias
+
+- [Docker — Documentación](https://docs.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Dockerfile reference](https://docs.docker.com/engine/reference/builder/)
+
+---
+
+*Proyecto basado en el [Docker Example Voting App](https://github.com/dockersamples/example-voting-app), adaptado para proyecto final de Docker.*
